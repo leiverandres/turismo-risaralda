@@ -6,11 +6,16 @@
   "repository": "https://github.com/leiverandres/turismo-risaralda",
   "author": "Leiver Andres Campeón",
   "license": "MIT",
+  "scripts": {
+    "start": "nodemon api.js"
+  },
   "dependencies": {
+    "colors": "^1.1.2",
     "mongoose": "^4.9.6",
     "restify": "^4.3.0"
   },
   "devDependencies": {
+    "nodemon": "^1.11.0",
     "prettier": "^1.2.2",
     "prettier-eslint": "^6.1.1"
   }
