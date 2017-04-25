@@ -1,0 +1,17 @@
+{
+  "name": "turismo_api",
+  "version": "0.0.1",
+  "description": "API for tourism application in \"eje cafetero\"",
+  "main": "api.js",
+  "repository": "https://github.com/leiverandres/turismo-risaralda",
+  "author": "Leiver Andres Campeón",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^4.9.6",
+    "restify": "^4.3.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.2.2",
+    "prettier-eslint": "^6.1.1"
+  }
+}
