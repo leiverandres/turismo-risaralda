@@ -11,11 +11,19 @@ module.exports.initData = () => {
   // init default channels
   for (let mun = 0; mun < municipalities.length; mun++) {
     for (let act = 0; act < activities.length; act++) {
-      let newChannel = new Channel({
+      let newChannel = {
         municipality: municipalities[mun],
         activity: activities[act]
-      });
-      newChannel.save();
+      };
+      Channel.findOneAndUpdate(newChannel, newChannel, {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true
+      })
+        .then(channel => {})
+        .catch(err => {
+          console.log(`Error while creating channels ${err}`);
+        });
     }
   }
 
@@ -24,8 +32,6 @@ module.exports.initData = () => {
     if (roots.length == 0) {
       const rootUser = new Root(config.root);
       rootUser.save();
-    } else {
-      console.log('Root already created');
     }
   });
 };
