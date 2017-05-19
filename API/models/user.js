@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const SALT_WORK_FACTOR = 10;
+
 const Schema = mongoose.Schema;
+
 const userSchema = new Schema({
   dni: {
     type: String,
@@ -27,8 +31,8 @@ const userSchema = new Schema({
   address: {
     type: String
   },
-  numbers: {
-    type: [String]
+  phoneNumber: {
+    type: String
   },
   country: {
     type: String
@@ -48,40 +52,48 @@ const userSchema = new Schema({
     enum: ['male', 'female'],
     default: 'male'
   },
-  roles: {
-    // May be user, admin, root
-    type: [String],
-    default: ['user']
-  },
-  state: {
-    type: String,
-    enum: ['accepted', 'pending'],
-    default: 'pending'
-  },
-  pendingChannels: {
-    type: Schema.ObjectId,
-    ref: 'Channel'
-  },
-  acceptedChannels: {
-    type: Schema.ObjectId,
-    ref: 'Channel'
+  suscribedChannels: [
+    {
+      type: Schema.ObjectId,
+      ref: 'Channel'
+    }
+  ],
+  adminPermission: {
+    state: {
+      type: String,
+      enum: ['accepted', 'pending', 'noAsked'],
+      default: 'noAsked'
+    },
+    pendingChannels: [
+      {
+        type: Schema.ObjectId,
+        ref: 'Channel'
+      }
+    ],
+    acceptedChannels: [
+      {
+        type: Schema.ObjectId,
+        ref: 'Channel'
+      }
+    ]
   }
 });
 
 userSchema.pre('save', function(next) {
-  let thisUser = this;
   if (this.isModified('password') || this.isNew) {
     bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
       if (err) {
         return next(err);
       }
-      bcrypt.hash(thisUser.password, salt, (err, hash) => {
-        if (err) {
-          return next(err);
-        }
-        thisUser.password = hash;
-        next();
-      });
+      bcrypt
+        .hash(this.password, salt)
+        .then(hash => {
+          this.password = hash;
+          next();
+        })
+        .catch(err => {
+          next(err);
+        });
     });
   } else {
     return next();

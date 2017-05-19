@@ -13,8 +13,11 @@
     "bcrypt": "^1.0.2",
     "colors": "^1.1.2",
     "jsonwebtoken": "^7.4.0",
+    "jwt-simple": "^0.5.1",
     "mongoose": "^4.9.6",
     "morgan": "^1.8.1",
+    "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
     "restify": "^4.3.0",
     "restify-router": "^0.4.2"
   },
