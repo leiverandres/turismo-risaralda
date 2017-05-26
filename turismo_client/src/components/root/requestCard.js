@@ -60,7 +60,7 @@ class RequestCard extends Component {
             {user.email}
           </Card.Meta>
           <Card.Description>
-            Quiere administrar:
+            <p>Quiere administrar:</p>
             {user.adminPermission.pendingChannels.map(channel => {
               return (
                 <Checkbox
