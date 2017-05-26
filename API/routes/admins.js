@@ -9,7 +9,6 @@ const config = require(`../config/${env}`);
 const adminRouter = new Router();
 
 module.exports = (app, mountPoint) => {
-  // TODO: fix this shit, add root jwt for getting pending
   adminRouter.get(`${mountPoint}`, rootAuth, (req, res) => {
     const query = {
       'adminPermission.state': 'accepted'
@@ -18,7 +17,10 @@ module.exports = (app, mountPoint) => {
       query['adminPermission.state'] = req.params.filter;
     }
     User.find(query)
-      .populate('adminPermission.pendingChannels')
+      .populate([
+        'adminPermission.pendingChannels',
+        'adminPermission.acceptedChannels'
+      ])
       .then(admins => {
         res.send(200, {success: true, message: 'ok', data: admins});
       })
