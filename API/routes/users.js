@@ -111,7 +111,7 @@ module.exports = (app, mountPoint) => {
         acceptedChannels: req.body.acceptedChannels
       }
     };
-    User.findOneAndUpdate({_id: req.tokenPayload.sub}, newData)
+    User.findOneAndUpdate({_id: req.params.id}, newData)
       .then(admin => {
         res.send(200, {success: true, data: admin});
       })

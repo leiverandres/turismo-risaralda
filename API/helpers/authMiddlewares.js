@@ -26,15 +26,12 @@ function userAuth(req, res, next) {
 }
 
 function rootAuth(req, res, next) {
-  console.log('headers: ', req.headers);
-  console.log(req.authorization);
   const authorization = req.headers['authorization'];
   if (authorization) {
     const token = authorization.split(' ')[1];
     decodeTokenRoot(token)
       .then(payload => {
         req.tokenPayload = payload;
-
         next();
       })
       .catch(err => {
@@ -55,7 +52,6 @@ function adminAuth(req, res, next) {
     decodeTokenAdmin(token)
       .then(payload => {
         req.tokenPayload = payload;
-
         next();
       })
       .catch(err => {

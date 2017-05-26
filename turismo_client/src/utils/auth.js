@@ -16,7 +16,7 @@ function login(credentials, userType) {
       if (resp.status === 200) {
         return resp.data;
       } else {
-        throw Error(resp.statusText);
+        Promise.reject(new Error(resp.statusText));
       }
     })
     .then(json => {

@@ -1,45 +1,44 @@
 import React, { Component } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button, Menu } from 'semantic-ui-react';
 
 import NavbarOptions from './navbarOptions';
 import Auth from '../utils/auth';
 
-// const RootNavbarOptions = props => {
-//   return (
-//     <Menu.Menu>
-//       <Menu.Item>
-//         Tablero
-//       </Menu.Item>
-//     </Menu.Menu>
-//   );
-// };
-
 class Nav extends Component {
   state = {
-    userToken: window.localStorage.getItem('token')
+    activeItem: ''
   };
 
-  logoutUser = () => {
-    window.localStorage.removeItem('token');
-    this.setState({ userToken: null });
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name });
   };
 
   render() {
+    const { activeItem } = this.state;
     return (
-      <Menu>
-        <Menu.Item as={NavLink} to="/">
+      <Menu pointing secondary>
+        <Menu.Item
+          as={Link}
+          to="/"
+          active={activeItem === 'home'}
+          name="home"
+          onClick={this.handleItemClick}
+        >
           Home
         </Menu.Item>
 
-        <NavbarOptions />
+        <NavbarOptions
+          activeItem={activeItem}
+          handleItemClick={this.handleItemClick}
+        />
         {!Auth.isLoggedIn()
           ? <Menu.Menu position="right">
               <Menu.Item>
                 <Button primary as={Link} to="/signup">Signup</Button>
               </Menu.Item>
 
-              <Menu.Item as={NavLink} to="/login">
+              <Menu.Item as={Link} to="/login">
                 Log-in
               </Menu.Item>
             </Menu.Menu>

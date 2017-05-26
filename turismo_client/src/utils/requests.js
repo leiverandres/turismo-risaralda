@@ -16,7 +16,6 @@ function getChannels() {
 
 function createUser(body) {
   return axios.post(`${apiBaseURI}/api/users`, body).then(resp => {
-    console.log(resp);
     if (resp.status >= 200 && resp.status < 300) {
       return resp.data;
     } else {
@@ -27,7 +26,6 @@ function createUser(body) {
 
 function getPendingUsers() {
   const token = Auth.getToken();
-  console.log('Token: ', token);
   var config = {
     headers: {
       Authorization: token
@@ -45,8 +43,28 @@ function getPendingUsers() {
     });
 }
 
+function applyPermissions(userId, body) {
+  const token = Auth.getToken();
+  var config = {
+    headers: {
+      Authorization: token
+    }
+  };
+  return axios
+    .post(`${apiBaseURI}/api/users/${userId}/convertInAdmin`, body, config)
+    .then(resp => {
+      console.log(resp);
+      if (resp.status >= 200 && resp.status < 300) {
+        return resp.data;
+      } else {
+        throw new Error(resp.data.message);
+      }
+    });
+}
+
 export default {
   getChannels,
   createUser,
-  getPendingUsers
+  getPendingUsers,
+  applyPermissions
 };

@@ -46,7 +46,7 @@ class Login extends Component {
         this.setState({
           loginInProgress: false,
           error: true,
-          errorMessage: err
+          errorMessage: 'Tu contraseña o username no son correctos'
         });
         this.resetFields();
       });
@@ -80,14 +80,13 @@ class Login extends Component {
       return (
         <div className="login-form">
           <Header size="huge" textAlign="center">Iniciar sesión</Header>
-          {this.state.errorMessage
-            ? <Message negative>
-                <Message.Header>
-                  Error iniciando sesión
-                </Message.Header>
-                <p>{this.state.errorMessage}</p>
-              </Message>
-            : null}
+          {this.state.error &&
+            <Message negative>
+              <Message.Header>
+                Error iniciando sesión
+              </Message.Header>
+              <p>{this.state.errorMessage}</p>
+            </Message>}
           <Form
             onSubmit={this.handleSubmit}
             loading={this.state.loginInProgress}

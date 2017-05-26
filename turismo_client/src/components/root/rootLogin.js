@@ -38,11 +38,9 @@ export default class RootLogin extends Component {
     };
     Auth.login(credentials, 'root')
       .then(res => {
-        console.log(res);
         this.setState({ loginInProgress: false, shoudlRedirect: true });
       })
       .catch(err => {
-        console.log(err);
         this.setState({
           loginInProgress: false,
           error: true,

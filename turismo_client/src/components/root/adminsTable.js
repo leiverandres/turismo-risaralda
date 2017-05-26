@@ -3,7 +3,7 @@ import React from 'react';
 const AdminsTable = props => {
   return (
     <div>
-      <h1>Solicitudes para ser administrador</h1>
+      <h1>Lista de administradores</h1>
     </div>
   );
 };
