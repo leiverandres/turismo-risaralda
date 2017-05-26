@@ -69,8 +69,8 @@ class Login extends Component {
     this.setState({ password: value });
   }
 
-  handleCheckChange(event) {
-    this.setState({ admin: !this.state.admin });
+  handleCheckChange(event, { checked }) {
+    this.setState({ asAdmin: checked });
   }
 
   render() {
