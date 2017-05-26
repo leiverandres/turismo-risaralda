@@ -43,7 +43,6 @@ module.exports = (app, mountPoint) => {
 
   userRouter.post(`${mountPoint}`, (req, res) => {
     const body = req.body;
-    console.log('.............:', req.params);
     if (!body) {
       res.send(403, {success: false, message: 'Body empty'});
     }

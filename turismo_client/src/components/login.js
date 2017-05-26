@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Button, Checkbox, Form, Header, Message } from 'semantic-ui-react';
-import axios from 'axios';
 
 import Auth from '../utils/auth';
 
