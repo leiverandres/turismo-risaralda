@@ -1,0 +1,15 @@
+h1 Hola #{name}
+
+p
+  |De parte del equipo de Ejeturismo queremos informarte el estado de tu solicitud
+  |sobre tomar el rol de administrador en nuestra plataforma.
+
+
+if permsList.length > 0
+  h3 Se te han asignado los siguientes tópicos
+  ul
+    each perm in permsList
+      li= perm.municipality + ' - ' + perm.activity
+  p Ingresa a tu perfil como administrador y crea nuevo contenido.
+else
+  p Lo sentimos pero no se te ha asignado ningún tópico para administrar.

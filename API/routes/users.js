@@ -4,6 +4,7 @@ const moment = require('moment');
 const User = require('../models/user');
 const Channel = require('../models/channel');
 const {userAuth, rootAuth} = require('../helpers/authMiddlewares');
+const mailer = require('../helpers/emailUtils');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require(`../config/${env}`);
@@ -113,14 +114,25 @@ module.exports = (app, mountPoint) => {
         acceptedChannels: req.body.acceptedChannels || []
       }
     };
-    User.findOneAndUpdate({_id: req.params.id}, newData)
+    User.findOneAndUpdate({_id: req.params.id}, newData, {new: true})
+      .populate('adminPermission.acceptedChannels')
       .then(admin => {
-        console.log('acceptedChannels', admin);
         Channel.update(
           {_id: {$in: req.body.acceptedChannels}},
           {assigned: true},
           {multi: true}
         );
+        return admin;
+      })
+      .then(admin => {
+        mailer.notifyPermissions(admin, (err, info) => {
+          console.log('Notifying permissions');
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Message sent: ' + info.response);
+          }
+        });
         return admin;
       })
       .then(admin => {
