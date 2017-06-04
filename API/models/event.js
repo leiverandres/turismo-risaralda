@@ -7,9 +7,9 @@ const EventSchema = new Schema({
     require: true,
     trim: true
   },
-  coordenates: {
-    longitud: { type: Number, require: true },
-    latitude: { type: Number, require: true }
+  coordinates: {
+    latitude: { type: Number, min: -85, max: 85, require: true },
+    longitude: { type: Number, min: -180, max: 180, require: true }
   },
   description: {
     type: String,
@@ -25,4 +25,4 @@ const EventSchema = new Schema({
   contactLink: String
 });
 
-module.exports = mongoose.model('Event, EventeSchema');
+module.exports = mongoose.model('Event', EventSchema);
