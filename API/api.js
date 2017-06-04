@@ -41,10 +41,12 @@ const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const adminsRoutes = require('./routes/admins');
 const channelsRoutes = require('./routes/channels');
+const eventsRoutes = require('./routes/events');
 
 authRoutes(api, '/api/auth');
 usersRoutes(api, '/api/users');
 adminsRoutes(api, '/api/admins');
 channelsRoutes(api, '/api/channels');
+eventsRoutes(api, '/api/events');
 
 module.exports = api;
