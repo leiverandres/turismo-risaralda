@@ -6,8 +6,10 @@
     "axios": "^0.16.1",
     "country-city": "^1.0.0",
     "jwt-decode": "^2.2.0",
+    "leaflet": "^1.0.3",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-leaflet": "^1.2.1",
     "react-router-dom": "^4.1.1",
     "semantic-ui-css": "^2.2.10",
     "semantic-ui-react": "^0.68.2"

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Auth from '../utils/auth';
 // import AdminNavOptions from
-// import UserNavOptions from
+import UserNavOptions from './navbarOptions/userNavOptions';
 import RootNavOptions from './navbarOptions/rootNavOptions';
 
 const NavbarOptions = props => {
@@ -13,7 +13,7 @@ const NavbarOptions = props => {
   } else if (userType === 'admin') {
     return <span> admin options </span>;
   } else if (userType === 'user') {
-    return <span> regular user options </span>;
+    return <UserNavOptions {...props} />;
   } else {
     return null;
   }

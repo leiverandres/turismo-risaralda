@@ -7,6 +7,8 @@ import Signup from '../containers/signupContainer';
 import Logout from './logout';
 import AdminsTable from '../containers/adminsTable';
 import RequestTable from '../containers/requestTable';
+import UserBoard from '../containers/userBoardContainer';
+import UserMap from '../containers/userMapContainer';
 import RootLogin from './root/rootLogin';
 import PrivateRoute from './privateRoute';
 
@@ -31,6 +33,9 @@ const Routes = props => {
         path="/root/admins/requests"
         component={RequestTable}
       />
+
+      <PrivateRoute userType="user" path="/map" component={UserMap} />
+      <PrivateRoute userType="user" path="/board" component={UserBoard} />
     </Switch>
   );
 };
