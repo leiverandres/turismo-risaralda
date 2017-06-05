@@ -3,13 +3,14 @@ import { Switch, Route } from 'react-router-dom';
 
 import Home from './home';
 import Login from './login';
-import Signup from '../containers/signupContainer';
 import Logout from './logout';
+import RootLogin from './root/rootLogin';
+import Signup from '../containers/signupContainer';
 import AdminsTable from '../containers/adminsTable';
 import RequestTable from '../containers/requestTable';
 import UserBoard from '../containers/userBoardContainer';
 import UserMap from '../containers/userMapContainer';
-import RootLogin from './root/rootLogin';
+import AdminMap from '../containers/adminMapContainer';
 import PrivateRoute from './privateRoute';
 
 const Routes = props => {
@@ -34,8 +35,10 @@ const Routes = props => {
         component={RequestTable}
       />
 
-      <PrivateRoute userType="user" path="/map" component={UserMap} />
+      <PrivateRoute exact userType="user" path="/map" component={UserMap} />
       <PrivateRoute userType="user" path="/board" component={UserBoard} />
+
+      <PrivateRoute userType="admin" path="/map/edit" component={AdminMap} />
     </Switch>
   );
 };
