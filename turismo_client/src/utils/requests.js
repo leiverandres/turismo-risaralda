@@ -1,4 +1,5 @@
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 import Auth from './auth';
 
@@ -54,10 +55,84 @@ function getAllAdmins() {
   return axios.get(`${apiBaseURI}/api/admins`, config).then(checkStatusCode);
 }
 
+function getEvents() {
+  const token = Auth.getToken();
+  const adminId = jwtDecode(token).sub;
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  };
+  return axios
+    .get(`${apiBaseURI}/api/admins/${adminId}/events`, config)
+    .then(checkStatusCode);
+}
+
+function createEvent(body) {
+  console.log('creating event', body);
+  const token = Auth.getToken();
+  var config = {
+    headers: {
+      Authorization: token
+    }
+  };
+  return axios
+    .post(`${apiBaseURI}/api/events`, body, config)
+    .then(checkStatusCode);
+}
+
+function findChannel(body) {
+  console.log('finding channel', body);
+  const params = `municipality=${body.municipality}&activity=${body.activity}`;
+  return axios
+    .get(`${apiBaseURI}/api/channels?${params}`)
+    .then(checkStatusCode)
+    .then(channels => {
+      if (channels) {
+        body.channel = channels.data[0]._id;
+        console.log('channel found', body);
+        return Promise.resolve(body);
+      } else {
+        return Promise.reject('No valid params to get the channel');
+      }
+    });
+}
+
+const getMunicipalities = () => {
+  const token = Auth.getToken();
+  const adminId = jwtDecode(token).sub;
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  };
+  return axios
+    .get(`${apiBaseURI}/api/admins/${adminId}/municipalities`, config)
+    .then(checkStatusCode);
+};
+
+const getActivities = () => {
+  const token = Auth.getToken();
+  const adminId = jwtDecode(token).sub;
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  };
+  return axios
+    .get(`${apiBaseURI}/api/admins/${adminId}/activities`, config)
+    .then(checkStatusCode);
+};
+
 export default {
   getChannels,
   createUser,
   getPendingUsers,
   getAllAdmins,
-  applyPermissions
+  applyPermissions,
+  findChannel,
+  getEvents,
+  createEvent,
+  getMunicipalities,
+  getActivities
 };

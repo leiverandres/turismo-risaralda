@@ -1,12 +1,35 @@
 const { Router } = require('restify-router');
 
 const Event = require('../models/event');
+const User = require('../models/user');
 const { adminAuth } = require('../helpers/authMiddlewares');
 
 const env = process.env.NODE_ENV || 'development';
 const config = require(`../config/${env}`);
 
 const eventRouter = new Router();
+
+const checkAdminChannel = (req, res, next) => {
+  console.log(req.tokenPayload);
+  User.findById(req.tokenPayload.sub)
+    .then(user => {
+      const acceptedChannels = user.adminPermission.acceptedChannels;
+      if (acceptedChannels.indexOf(req.body.channel) === -1) {
+        res.send(401, {
+          succes: false,
+          message: 'This user has no permission for this topic'
+        });
+      }
+      next();
+    })
+    .catch(err => {
+      console.log('Error:', err);
+      res.send(500, {
+        succes: false,
+        message: 'Internal problems getting user'
+      });
+    });
+};
 
 module.exports = (app, mountPoint) => {
   eventRouter.get(mountPoint, (req, res) => {
@@ -20,9 +43,10 @@ module.exports = (app, mountPoint) => {
       });
   });
   // TODO: make just admin of certain topic post its events
-  eventRouter.post(mountPoint, adminAuth, (req, res) => {
+  eventRouter.post(mountPoint, adminAuth, checkAdminChannel, (req, res) => {
     Event.create(req.body)
       .then(eventCreated => {
+        console.log(eventCreated);
         res.send(201, {
           succes: true,
           message: 'Event created',

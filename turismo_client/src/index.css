@@ -4,7 +4,6 @@ body {
   font-family: sans-serif;
 }
 
-
 .form {
   width: 80%;
   margin: 0 auto;
@@ -24,4 +23,18 @@ body {
   min-height: 500px;
   width: 100%;
   margin: 0 auto;
+}
+
+/* Imitating semantic input style*/
+.SingleDatePicker {
+  width: 100%;
+}
+
+.SingleDatePickerInput {
+  border: 1px solid rgba(34, 36, 38, .15);
+  border-radius: .28571429rem;
+}
+
+.SingleDatePickerInput:hover {
+  border-color: #B1B2B3;
 }
