@@ -12,6 +12,7 @@ const UserNavOptions = ({ activeItem, handleItemClick }) => {
         content="Mapa"
         active={activeItem === 'map'}
         onClick={handleItemClick}
+        icon="map"
       />
       <Menu.Item
         as={Link}
@@ -20,6 +21,7 @@ const UserNavOptions = ({ activeItem, handleItemClick }) => {
         content="Explorar"
         active={activeItem === 'board'}
         onClick={handleItemClick}
+        icon="rocket"
       />
     </Menu.Menu>
   );

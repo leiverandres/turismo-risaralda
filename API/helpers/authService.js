@@ -24,16 +24,22 @@ function composeToken(customParams, secret) {
 }
 
 function createTokenUser(user) {
-  return composeToken({sub: user._id, userType: 'user'}, config.usrSecret);
+  return composeToken(
+    { sub: user._id, userType: 'user', username: user.username },
+    config.usrSecret
+  );
 }
 
 function createTokenRoot(rootUser) {
-  return composeToken({sub: rootUser._id, userType: 'root'}, config.rootSecret);
+  return composeToken(
+    { sub: rootUser._id, userType: 'root', username: rootUser.username },
+    config.rootSecret
+  );
 }
 
 function createTokenAdmin(adminUser) {
   return composeToken(
-    {sub: adminUser._id, userType: 'admin'},
+    { sub: adminUser._id, userType: 'admin', username: adminUser.username },
     config.adminSecret
   );
 }

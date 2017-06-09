@@ -12,6 +12,7 @@ const AdminNavOptions = ({ activeItem, handleItemClick }) => {
         content="Mapa"
         active={activeItem === 'editmap'}
         onClick={handleItemClick}
+        icon="map"
       />
     </Menu.Menu>
   );

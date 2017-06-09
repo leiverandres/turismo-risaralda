@@ -124,6 +124,19 @@ const getActivities = () => {
     .then(checkStatusCode);
 };
 
+const getUserEvents = () => {
+  const token = Auth.getToken();
+  const userId = jwtDecode(token).sub;
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  };
+  return axios
+    .get(`${apiBaseURI}/api/users/${userId}/events`, config)
+    .then(checkStatusCode);
+};
+
 export default {
   getChannels,
   createUser,
@@ -134,5 +147,6 @@ export default {
   getEvents,
   createEvent,
   getMunicipalities,
-  getActivities
+  getActivities,
+  getUserEvents
 };

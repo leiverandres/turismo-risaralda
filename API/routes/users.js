@@ -1,9 +1,10 @@
-const {Router} = require('restify-router');
+const { Router } = require('restify-router');
 const moment = require('moment');
 
 const User = require('../models/user');
 const Channel = require('../models/channel');
-const {userAuth, rootAuth} = require('../helpers/authMiddlewares');
+const Event = require('../models/event');
+const { userAuth, rootAuth } = require('../helpers/authMiddlewares');
 const mailer = require('../helpers/emailUtils');
 
 const env = process.env.NODE_ENV || 'development';
@@ -27,26 +28,46 @@ const userRouter = new Router();
 //   return true;
 // }
 
-// TODO: protect get with admin jwt
-
 module.exports = (app, mountPoint) => {
   userRouter.get(`${mountPoint}`, (req, res) => {
     User.find()
+      .populate('suscribedChannels')
       .select('-adminPermission')
       .then(users => {
         console.log('Users', users);
-        res.send(200, {success: true, message: 'ok', data: users});
+        res.send(200, { success: true, message: 'ok', data: users });
       })
       .catch(err => {
         console.error(err);
-        res.send(500, {success: false, message: 'Problem getting users'});
+        res.send(500, { success: false, message: 'Problem getting users' });
+      });
+  });
+
+  userRouter.get(`${mountPoint}/:id/events`, userAuth, (req, res) => {
+    User.findById(req.params.id)
+      .then(user => {
+        Event.find({
+          channel: {
+            $in: user.suscribedChannels
+          }
+        })
+          .populate('channel')
+          .then(events => {
+            res.send(200, { success: 200, message: 'ok', data: events });
+          })
+          .catch(err => {
+            Promise.reject(err);
+          });
+      })
+      .catch(err => {
+        res.send(500, { success: false, message: 'Internal problem' });
       });
   });
 
   userRouter.post(`${mountPoint}`, (req, res) => {
     const body = req.body;
     if (!body) {
-      res.send(403, {success: false, message: 'Body empty'});
+      res.send(403, { success: false, message: 'Body empty' });
     }
 
     User.findOne({
@@ -65,17 +86,21 @@ module.exports = (app, mountPoint) => {
         }
       })
       .then(newUser => {
-        res.send(201, {success: true, message: 'User created', data: newUser});
+        res.send(201, {
+          success: true,
+          message: 'User created',
+          data: newUser
+        });
       })
       .catch(err => {
         console.log('Error: ', err);
-        res.send(500, {success: false, message: 'Internal error'});
+        res.send(500, { success: false, message: 'Internal error' });
       });
   });
 
   userRouter.put(`${mountPoint}/:id`, userAuth, (req, res) => {
     if (!req.body) {
-      res.send(403, {success: false, message: 'Body empty'});
+      res.send(403, { success: false, message: 'Body empty' });
     } else if (badBody(req.body)) {
       res.send(403, {
         success: false,
@@ -83,25 +108,27 @@ module.exports = (app, mountPoint) => {
       });
     }
 
-    User.findOneAndUpdate({_id: req.tokenPayload.sub}, req.body, {new: true})
+    User.findOneAndUpdate({ _id: req.tokenPayload.sub }, req.body, {
+      new: true
+    })
       .select('-adminPermission')
       .then(userUpdated => {
-        res.send(200, {success: true, data: userUpdated});
+        res.send(200, { success: true, data: userUpdated });
       })
       .catch(err => {
-        res.send(500, {success: false, message: 'Problem updating user'});
+        res.send(500, { success: false, message: 'Problem updating user' });
       });
   });
 
   userRouter.del(`${mountPoint}/:id`, userAuth, (req, res) => {
-    res.send(201, {success: true, message: 'User deleted'});
-    User.remove({_id: req.tokenPayload.sub})
+    res.send(201, { success: true, message: 'User deleted' });
+    User.remove({ _id: req.tokenPayload.sub })
       .then(() => {
         res.send(204);
       })
       .catch(err => {
         console.error('Error removing user', err);
-        res.send(500, {success: false, message: 'Problem removing user'});
+        res.send(500, { success: false, message: 'Problem removing user' });
       });
   });
 
@@ -114,13 +141,13 @@ module.exports = (app, mountPoint) => {
         acceptedChannels: req.body.acceptedChannels || []
       }
     };
-    User.findOneAndUpdate({_id: req.params.id}, newData, {new: true})
+    User.findOneAndUpdate({ _id: req.params.id }, newData, { new: true })
       .populate('adminPermission.acceptedChannels')
       .then(admin => {
         Channel.update(
-          {_id: {$in: req.body.acceptedChannels}},
-          {assigned: true},
-          {multi: true}
+          { _id: { $in: req.body.acceptedChannels } },
+          { assigned: true },
+          { multi: true }
         );
         return admin;
       })
@@ -136,7 +163,7 @@ module.exports = (app, mountPoint) => {
         return admin;
       })
       .then(admin => {
-        res.send(200, {success: true, data: admin});
+        res.send(200, { success: true, data: admin });
       })
       .catch(err => {
         console.error('Error converting user into admin', err);

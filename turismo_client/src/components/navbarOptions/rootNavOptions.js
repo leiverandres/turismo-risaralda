@@ -12,6 +12,7 @@ const RootNavOptions = ({ activeItem, handleItemClick }) => {
         content="Tablero de administradores"
         active={activeItem === 'table'}
         onClick={handleItemClick}
+        icon="tasks"
       />
       <Menu.Item
         as={Link}
@@ -20,6 +21,7 @@ const RootNavOptions = ({ activeItem, handleItemClick }) => {
         content="Solicitudes"
         active={activeItem === 'requests'}
         onClick={handleItemClick}
+        icon="inbox"
       />
     </Menu.Menu>
   );

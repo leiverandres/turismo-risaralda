@@ -7,7 +7,8 @@ class MapWithEvents extends Component {
     position: PropTypes.array.isRequired,
     events: PropTypes.array.isRequired,
     handleMapClick: PropTypes.func,
-    editable: PropTypes.bool
+    editable: PropTypes.bool,
+    onSeeMore: PropTypes.func
   };
 
   static defaultProps = {
@@ -15,7 +16,13 @@ class MapWithEvents extends Component {
   };
 
   render() {
-    const { position, events, editable, handleMapClick } = this.props;
+    const {
+      position,
+      events,
+      editable,
+      handleMapClick,
+      onSeeMore
+    } = this.props;
 
     return (
       <div className="leaflet-container">
@@ -41,7 +48,12 @@ class MapWithEvents extends Component {
                 draggable={editable && true}
               >
                 <Popup>
-                  <span>{event.description}</span>
+                  <div>
+                    <h1>{event.name}</h1>
+                    <p>{`${event.description.slice(0, 140)} ...`}</p>
+                    {onSeeMore &&
+                      <a onClick={onSeeMore.bind(null, event)}>Ver más</a>}
+                  </div>
                 </Popup>
               </Marker>
             );

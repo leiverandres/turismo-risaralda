@@ -7,6 +7,18 @@ function getToken() {
   return window.localStorage.getItem('token');
 }
 
+function getUserType() {
+  const token = getToken();
+  const userType = jwtDecode(token).userType;
+  return userType;
+}
+
+function getUsername() {
+  const token = getToken();
+  const userType = jwtDecode(token).username;
+  return userType;
+}
+
 function login(credentials, userType) {
   return axios
     .post(`${apiBaseURI}/api/auth/${userType}Login`, credentials, {
@@ -47,5 +59,7 @@ export default {
   logout,
   isLoggedIn,
   getToken,
+  getUserType,
+  getUsername,
   userTypeLogged
 };
