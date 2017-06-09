@@ -13,7 +13,7 @@ const ListItemsWithPagination = ({
 }) => {
   return (
     <Grid centered>
-      <Grid.Column width="14">
+      <Grid.Column width={rest.width || '14'}>
         <Segment.Group>
           <Header
             textAlign="center"

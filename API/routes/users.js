@@ -174,5 +174,57 @@ module.exports = (app, mountPoint) => {
       });
   });
 
+  userRouter.get(`${mountPoint}/:id/activities`, userAuth, (req, res) => {
+    User.findById(req.params.id)
+      .populate('suscribedChannels')
+      .then(user => {
+        const activities = [];
+        for (let ch of user.suscribedChannels) {
+          if (activities.indexOf(ch.activity) === -1) {
+            activities.push(ch.activity);
+          }
+        }
+
+        res.send(200, {
+          success: true,
+          message: "User's activities",
+          data: activities
+        });
+      })
+      .catch(err => {
+        console.log('Error:', err);
+        res.send(500, {
+          success: false,
+          message: 'Unable to get the admin activities'
+        });
+      });
+  });
+
+  userRouter.get(`${mountPoint}/:id/municipalities`, userAuth, (req, res) => {
+    User.findById(req.params.id)
+      .populate('suscribedChannels')
+      .then(user => {
+        const municipalities = [];
+        for (let ch of user.suscribedChannels) {
+          if (municipalities.indexOf(ch.municipality) === -1) {
+            municipalities.push(ch.municipality);
+          }
+        }
+
+        res.send(200, {
+          success: true,
+          message: "User's municipalities ",
+          data: municipalities
+        });
+      })
+      .catch(err => {
+        console.log('Error:', err);
+        res.send(500, {
+          success: false,
+          message: 'Unable to get the admin municipalities'
+        });
+      });
+  });
+
   userRouter.applyRoutes(app.server);
 };
