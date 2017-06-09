@@ -8,7 +8,8 @@ class MapWithEvents extends Component {
     events: PropTypes.array.isRequired,
     handleMapClick: PropTypes.func,
     editable: PropTypes.bool,
-    onSeeMore: PropTypes.func
+    onSeeMore: PropTypes.func,
+    onEdit: PropTypes.func
   };
 
   static defaultProps = {
@@ -21,7 +22,8 @@ class MapWithEvents extends Component {
       events,
       editable,
       handleMapClick,
-      onSeeMore
+      onSeeMore,
+      onEdit
     } = this.props;
 
     return (
@@ -53,6 +55,7 @@ class MapWithEvents extends Component {
                     <p>{`${event.description.slice(0, 140)} ...`}</p>
                     {onSeeMore &&
                       <a onClick={onSeeMore.bind(null, event)}>Ver más</a>}
+                    {onEdit && <a onClick={onEdit.bind(null, event)}>Editar</a>}
                   </div>
                 </Popup>
               </Marker>

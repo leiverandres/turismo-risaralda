@@ -81,6 +81,22 @@ function createEvent(body) {
     .then(checkStatusCode);
 }
 
+function updateEvent(body) {
+  console.log('updating event', body);
+  const token = Auth.getToken();
+  const eventId = body.eventId;
+  delete body.eventId;
+
+  var config = {
+    headers: {
+      Authorization: token
+    }
+  };
+  return axios
+    .put(`${apiBaseURI}/api/events/${eventId}`, body, config)
+    .then(checkStatusCode);
+}
+
 function findChannel(body) {
   console.log('finding channel', body);
   const params = `municipality=${body.municipality}&activity=${body.activity}`;
@@ -148,5 +164,6 @@ export default {
   createEvent,
   getMunicipalities,
   getActivities,
-  getUserEvents
+  getUserEvents,
+  updateEvent
 };

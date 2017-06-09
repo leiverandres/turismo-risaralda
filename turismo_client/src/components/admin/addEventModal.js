@@ -15,12 +15,13 @@ class AddEventModal extends Component {
     const {
       open,
       handleClose,
-      newEventFormData,
+      eventFormData,
       handleInputChange,
       handleDateChange,
       handleSubmit,
       dropdownOpts
     } = this.props;
+    console.log(eventFormData);
     return (
       <Modal open={open} onClose={handleClose}>
         <Modal.Header>Datos sobre el nuevo evento</Modal.Header>
@@ -35,7 +36,7 @@ class AddEventModal extends Component {
                     label="Título o Nombre del evento"
                     placeholder="Título"
                     name="name"
-                    value={newEventFormData.name}
+                    value={eventFormData.name}
                     onChange={handleInputChange}
                   />
                   <Form.TextArea
@@ -43,14 +44,14 @@ class AddEventModal extends Component {
                     label="Descripción del evento"
                     placeholder="Incluye toda la información relevante"
                     name="description"
-                    value={newEventFormData.description}
+                    value={eventFormData.description}
                     onChange={handleInputChange}
                   />
                   <Form.Group widths="equal">
                     <Form.Field>
                       <label>Fecha del evento</label>
                       <SingleDatePicker
-                        date={newEventFormData.date}
+                        date={eventFormData.date}
                         onDateChange={handleDateChange}
                         focused={this.state.datePickerFocused}
                         onFocusChange={({ focused }) =>
@@ -66,7 +67,7 @@ class AddEventModal extends Component {
                       selection
                       options={dropdownOpts.municipalities}
                       name="municipality"
-                      value={newEventFormData.municipality}
+                      value={eventFormData.municipality}
                       onChange={handleInputChange}
                     />
 
@@ -78,6 +79,7 @@ class AddEventModal extends Component {
                       selection
                       options={dropdownOpts.activities}
                       name="activity"
+                      value={eventFormData.activity}
                       onChange={handleInputChange}
                     />
                   </Form.Group>
@@ -89,21 +91,21 @@ class AddEventModal extends Component {
                       label="Teléfono"
                       name="contactNumber"
                       placeholder="celular o fijo"
-                      value={newEventFormData.contactNumber}
+                      value={eventFormData.contactNumber}
                       onChange={handleInputChange}
                     />
                     <Form.Input
                       label="Correo electrónico"
                       name="contactEmail"
                       placeholder="example@dominio.com"
-                      value={newEventFormData.contactEmail}
+                      value={eventFormData.contactEmail}
                       onChange={handleInputChange}
                     />
                     <Form.Input
                       label="Link a tu página"
                       name="contactLink"
                       placeholder="http://"
-                      value={newEventFormData.contactLink}
+                      value={eventFormData.contactLink}
                       onChange={handleInputChange}
                     />
                   </Form.Group>

@@ -24,10 +24,6 @@ const checkAdminChannel = (req, res, next) => {
     })
     .catch(err => {
       console.log('Error:', err);
-      res.send(500, {
-        succes: false,
-        message: 'Internal problems getting user'
-      });
     });
 };
 

@@ -12,11 +12,12 @@ class AdminMapContainer extends Component {
     position: [4.814278, -75.694558],
     events: [],
     openConfirmation: false,
-    addNewEvent: false,
+    openEventModal: false,
     newEventLatlng: {},
     municipalityOpts: [],
     activityOpts: [],
-    newEventFormData: {
+    modalEventObj: {},
+    eventFormData: {
       name: '',
       description: '',
       date: moment.utc(),
@@ -66,6 +67,7 @@ class AdminMapContainer extends Component {
     requests
       .getEvents()
       .then(events => {
+        console.log(events);
         this.setState({ events: events.data });
       })
       .catch(err => {
@@ -77,14 +79,19 @@ class AdminMapContainer extends Component {
   };
 
   handleConfirm = () =>
-    this.setState({ openConfirmation: false, addNewEvent: true });
+    this.setState({
+      openConfirmation: false,
+      openEventModal: true,
+      modalMode: 'creation'
+    });
 
   // Use for confirmation cancel and modal close
   handleCancel = () =>
     this.setState({
       openConfirmation: false,
       newEventLatlng: {},
-      addNewEvent: false
+      openEventModal: false,
+      modalEventObj: {}
     });
 
   onMapClick = e => {
@@ -96,32 +103,41 @@ class AdminMapContainer extends Component {
   handleInputChange = (ev, data) => {
     const { name, value } = data;
     this.setState(prevState => {
-      prevState.newEventFormData[name] = value;
+      prevState.eventFormData[name] = value;
       return prevState;
     });
   };
 
   handleDateChange = date => {
     this.setState(prevState => {
-      prevState.newEventFormData.date = date;
+      prevState.eventFormData.date = date;
       return prevState;
     });
   };
 
   handleSubmit = ev => {
     ev.preventDefault();
-    const body = Object.assign({}, this.state.newEventFormData);
-    body.coordinates = {
-      latitude: this.state.newEventLatlng.lat,
-      longitude: this.state.newEventLatlng.lng
-    };
+    const body = Object.assign({}, this.state.eventFormData);
     body.date = body.date.toString();
     console.log('Body to submit', body);
+    let submitRequest;
+    if (this.state.modalMode === 'creation') {
+      body.coordinates = {
+        latitude: this.state.newEventLatlng.lat,
+        longitude: this.state.newEventLatlng.lng
+      };
+      submitRequest = requests.createEvent;
+    } else {
+      submitRequest = requests.updateEvent;
+      body.eventId = this.state.modalEventObj._id;
+      body.coordinates = this.state.modalEventObj.coordinates;
+    }
     requests
       .findChannel(body)
-      .then(requests.createEvent)
+      .then(submitRequest)
       .then(res => {
         this.handleCancel(); // cleans modal and confirmation
+        this.cleanFormData();
         this.fetchEvents(); // to update map markers
       })
       .catch(err => {
@@ -130,6 +146,8 @@ class AdminMapContainer extends Component {
           message:
             'Revisa que tengas permisos sobre el municipio o actividad seleccionados'
         });
+        this.cleanFormData();
+        this.fetchEvents(); // to update map markers
       });
   };
 
@@ -143,13 +161,50 @@ class AdminMapContainer extends Component {
     });
   };
 
+  handleEdit = event => {
+    console.log('editing');
+    this.setState({
+      openEventModal: true,
+      modalMode: 'edition',
+      modalEventObj: event,
+      eventFormData: {
+        name: event.name,
+        description: event.description,
+        date: moment.utc(event.date),
+        municipality: event.channel.municipality,
+        activity: event.channel.activity,
+        contactEmail: event.contactEmail || '',
+        contactNumber: event.contactNumber || '',
+        contactLink: event.contactLink || ''
+      }
+    });
+  };
+
+  cleanFormData = () => {
+    this.setState({
+      modalMode: '',
+      modalEventObj: {},
+      eventFormData: {
+        name: '',
+        description: '',
+        date: moment.utc(),
+        municipality: '',
+        activity: '',
+        contactEmail: '',
+        contactNumber: '',
+        contactLink: ''
+      }
+    });
+  };
+
   render() {
     const {
       position,
       events,
       openConfirmation,
-      addNewEvent,
-      newEventFormData
+      openEventModal,
+      eventFormData,
+      modalMode
     } = this.state;
 
     const dropdownOpts = {
@@ -175,10 +230,11 @@ class AdminMapContainer extends Component {
           onConfirm={this.handleConfirm}
         />
         <AddEventModal
-          open={addNewEvent}
+          open={openEventModal}
+          mode={modalMode}
           handleClose={this.handleCancel}
           handleInputChange={this.handleInputChange}
-          newEventFormData={newEventFormData}
+          eventFormData={eventFormData}
           handleDateChange={this.handleDateChange}
           handleSubmit={this.handleSubmit}
           dropdownOpts={dropdownOpts}
@@ -188,6 +244,7 @@ class AdminMapContainer extends Component {
           events={events}
           editable={true}
           handleMapClick={this.onMapClick}
+          onEdit={this.handleEdit}
         />
       </div>
     );
