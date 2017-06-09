@@ -67,7 +67,6 @@ class AdminMapContainer extends Component {
     requests
       .getEvents()
       .then(events => {
-        console.log(events);
         this.setState({ events: events.data });
       })
       .catch(err => {
